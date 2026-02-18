@@ -98,7 +98,14 @@
     h2 { margin-top: 22px; padding-top: 14px; border-top: 1px solid var(--color-neutral-6, #d5dbe6); }
     h3 { color: var(--color-accent-11, #0f766e); }
     a { color: var(--color-accent-11, #0f766e); text-decoration: none; }
-    a:hover { text-decoration: underline; }
+    .report a {
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      text-decoration-thickness: 1px;
+    }
+    .report a:hover {
+      text-decoration-thickness: 2px;
+    }
     pre, code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
     pre {
       background: var(--color-neutral-1, #f8fafc);
@@ -148,6 +155,9 @@
       margin: 10px 0 16px;
       overflow: auto;
     }
+    .mermaid-wrap .mermaid svg {
+      max-width: none;
+    }
     .mermaid svg text,
     .mermaid svg tspan,
     .mermaid .legend text,
@@ -156,6 +166,32 @@
       color: var(--color-neutral-12, #0f172a) !important;
     }
     .mermaid svg .pieTitleText { fill: var(--color-neutral-11, #475569) !important; }
+    .mermaid foreignObject,
+    .mermaid foreignObject *,
+    .mermaid .nodeLabel,
+    .mermaid .edgeLabel,
+    .mermaid .cluster-label,
+    .mermaid .label {
+      color: var(--color-neutral-12, #0f172a) !important;
+      fill: var(--color-neutral-12, #0f172a) !important;
+    }
+    /* xychart-beta often emits low-opacity labels; force readable foreground */
+    .mermaid svg text,
+    .mermaid svg tspan {
+      fill: var(--color-neutral-12, #0f172a) !important;
+      opacity: 1 !important;
+    }
+    .mermaid svg [class*="axis"] text,
+    .mermaid svg [class*="tick"] text,
+    .mermaid svg [class*="title"] text,
+    .mermaid svg [class*="label"] text {
+      fill: var(--color-neutral-12, #0f172a) !important;
+      opacity: 1 !important;
+    }
+    .mermaid svg .x-axis text,
+    .mermaid svg [class*="x-axis"] text {
+      font-size: 10px !important;
+    }
     .error {
       border: 1px solid #ef4444;
       border-radius: 10px;
@@ -229,16 +265,17 @@
     }
 
     function setTheme(theme) {
-      const picked = themeClasses.includes(theme) ? theme : 'windows11-dark';
+      const picked = themeClasses.includes(theme) ? theme : 'seamless-light';
       themeClasses.forEach(c => root.classList.remove(c));
       root.classList.add(picked);
       root.setAttribute('data-theme', isDarkTheme(picked) ? 'dark' : 'light');
       localStorage.setItem(themeKey, picked);
       themeSelect.value = picked;
       themeBtn.textContent = isDarkTheme(picked) ? 'Light Mode' : 'Dark Mode';
+      renderMermaid();
     }
 
-    setTheme(localStorage.getItem(themeKey) || 'windows11-dark');
+    setTheme(localStorage.getItem(themeKey) || 'seamless-light');
     themeSelect.addEventListener('change', () => setTheme(themeSelect.value));
     themeBtn.addEventListener('click', () => setTheme(pairedTheme(themeSelect.value)));
 
@@ -305,12 +342,99 @@
       });
     }
 
+    function getMermaidThemeVariables() {
+      const css = getComputedStyle(root);
+      const v = (name, fallback) => (css.getPropertyValue(name) || '').trim() || fallback;
+      return {
+        darkMode: root.getAttribute('data-theme') === 'dark',
+        background: v('--color-bg', '#ffffff'),
+        textColor: v('--color-neutral-12', '#0f172a'),
+        titleColor: v('--color-neutral-12', '#0f172a'),
+        primaryColor: v('--color-neutral-2', '#f8fafc'),
+        primaryTextColor: v('--color-neutral-12', '#0f172a'),
+        primaryBorderColor: v('--color-neutral-7', '#94a3b8'),
+        lineColor: v('--color-neutral-9', '#64748b'),
+        secondaryColor: v('--color-neutral-3', '#eef2f7'),
+        tertiaryColor: v('--color-neutral-1', '#ffffff'),
+        clusterBkg: v('--color-neutral-2', '#f8fafc'),
+        clusterBorder: v('--color-neutral-7', '#94a3b8'),
+        edgeLabelBackground: v('--color-bg', '#ffffff'),
+        cScale0: v('--color-accent-4', '#bfdbfe'),
+        cScale1: v('--color-accent-secondary-4', '#ddd6fe'),
+        cScale2: v('--color-accent-6', '#93c5fd'),
+        cScale3: v('--color-accent-secondary-6', '#c4b5fd'),
+        cScale4: v('--color-accent-8', '#60a5fa'),
+        cScale5: v('--color-accent-secondary-8', '#a78bfa'),
+        cScale6: v('--color-accent-10', '#3b82f6'),
+        cScale7: v('--color-accent-secondary-10', '#8b5cf6'),
+        cScale8: v('--color-accent-11', '#2563eb'),
+        cScale9: v('--color-accent-secondary-11', '#7c3aed'),
+        plotColorPalette: [
+          v('--color-accent-8', '#60a5fa'),
+          v('--color-accent-secondary-8', '#a78bfa'),
+          v('--color-accent-10', '#3b82f6'),
+          v('--color-accent-secondary-10', '#8b5cf6'),
+          v('--color-accent-6', '#93c5fd'),
+          v('--color-accent-secondary-6', '#c4b5fd')
+        ].join(',')
+      };
+    }
+
+    function parseXyChartXAxisLabels(graph) {
+      if (!graph || !graph.includes('xychart-beta')) return [];
+      const m = graph.match(/x-axis\s*\[(.*?)\]/s);
+      if (!m) return [];
+      return (m[1].match(/"([^"]*)"/g) || [])
+        .map(s => s.replace(/^"|"$/g, ''))
+        .filter(Boolean);
+    }
+
+    function adjustXyChartLayout(blocks) {
+      blocks.forEach(b => {
+        const graph = b.dataset.graph || '';
+        const labels = parseXyChartXAxisLabels(graph);
+        if (!labels.length) return;
+        const svg = b.querySelector('svg');
+        if (!svg) return;
+        const container = b.closest('.mermaid-wrap');
+        const containerWidth = Math.max(container?.clientWidth || 0, 760);
+        const spacingWidth = Math.max(containerWidth, Math.round(containerWidth * 1.6));
+        const scaleDown = 0.52;
+        const baseHeight = Number(svg.getAttribute('height') || '0');
+        const finalWidth = Math.round(spacingWidth * scaleDown);
+        svg.style.width = `${finalWidth}px`;
+        svg.style.minWidth = `${finalWidth}px`;
+        if (baseHeight > 0) {
+          const finalHeight = Math.round(baseHeight * scaleDown);
+          svg.style.height = `${finalHeight}px`;
+          svg.style.maxHeight = `${finalHeight}px`;
+        }
+
+        const labelSet = new Set(labels);
+        svg.querySelectorAll('text').forEach(t => {
+          const txt = (t.textContent || '').trim();
+          if (!labelSet.has(txt)) return;
+          t.style.fontSize = '7px';
+        });
+      });
+    }
+
     async function renderMermaid() {
       const blocks = reportEl.querySelectorAll('.mermaid[data-graph]');
       if (!blocks.length || !window.mermaid) return;
-      mermaid.initialize({ startOnLoad: false, theme: 'base' });
-      blocks.forEach(b => b.textContent = b.dataset.graph || '');
-      try { await mermaid.run({ nodes: blocks }); } catch {}
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: 'base',
+        themeVariables: getMermaidThemeVariables()
+      });
+      blocks.forEach(b => {
+        b.removeAttribute('data-processed');
+        b.textContent = b.dataset.graph || '';
+      });
+      try {
+        await mermaid.run({ nodes: blocks });
+        adjustXyChartLayout(blocks);
+      } catch {}
     }
 
     async function boot() {
@@ -327,7 +451,7 @@
         buildToc();
         await renderMermaid();
         const snap = loaded.text.split('\n').find(l => l.startsWith('Snapshot UTC:'));
-        metaEl.textContent = snap ? snap : `Source: ${loaded.src}`;
+        metaEl.textContent = snap || '';
       } catch (e) {
         metaEl.textContent = 'Load failed';
         reportEl.innerHTML = `<div class="error">${String(e)}</div>`;
