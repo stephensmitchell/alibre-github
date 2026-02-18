@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -32,25 +32,61 @@
     .title { font-weight: 700; }
     .meta { color: var(--color-neutral-11, #475569); }
     .spacer { flex: 1; }
-    button {
+    button, select {
       border: 1px solid var(--color-neutral-6, #d5dbe6);
       background: var(--color-neutral-2, #fff);
       color: var(--color-neutral-12, #0f172a);
       border-radius: 10px;
       padding: 8px 12px;
       font-weight: 600;
-      cursor: pointer;
     }
-    select {
-      border: 1px solid var(--color-neutral-6, #d5dbe6);
-      background: var(--color-neutral-2, #fff);
-      color: var(--color-neutral-12, #0f172a);
-      border-radius: 10px;
-      padding: 8px 12px;
-      font-weight: 600;
-      min-width: 180px;
-    }
+    button { cursor: pointer; }
+    select { min-width: 180px; }
     main { width: 100%; margin: 0; padding: 0; }
+    .layout {
+      display: grid;
+      grid-template-columns: 290px minmax(0, 1fr);
+      gap: 16px;
+      width: 100%;
+    }
+    .toc {
+      position: sticky;
+      top: 64px;
+      align-self: start;
+      max-height: calc(100vh - 84px);
+      overflow: auto;
+      border: 0;
+      border-right: 1px solid var(--color-neutral-6, #d5dbe6);
+      border-radius: 0;
+      background: transparent;
+      padding: 10px 12px 10px 10px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .toc::-webkit-scrollbar { display: none; }
+    .toc-title {
+      font-weight: 700;
+      margin: 2px 4px 8px;
+      color: var(--color-neutral-11, #475569);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+    .toc a {
+      display: block;
+      padding: 5px 8px;
+      border-radius: 8px;
+      color: var(--color-neutral-12, #0f172a);
+      text-decoration: none;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    .toc a:hover {
+      background: var(--color-neutral-3, #eef2f7);
+      text-decoration: none;
+    }
+    .toc a.l2 { padding-left: 16px; color: var(--color-neutral-11, #475569); }
+    .toc a.l3 { padding-left: 24px; color: var(--color-neutral-11, #475569); }
     .report {
       background: var(--color-bg, var(--color-neutral-1, #f5f7fb));
       border: 0;
@@ -58,15 +94,12 @@
       padding: 12px 20px 24px;
       width: 100%;
     }
-    h1,h2,h3,h4 { line-height: 1.25; }
-    h1,h2,h3,h4 { scroll-margin-top: 84px; }
+    h1,h2,h3,h4 { line-height: 1.25; scroll-margin-top: 84px; }
     h2 { margin-top: 22px; padding-top: 14px; border-top: 1px solid var(--color-neutral-6, #d5dbe6); }
     h3 { color: var(--color-accent-11, #0f766e); }
     a { color: var(--color-accent-11, #0f766e); text-decoration: none; }
     a:hover { text-decoration: underline; }
-    pre, code {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    }
+    pre, code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
     pre {
       background: var(--color-neutral-1, #f8fafc);
       border: 1px solid var(--color-neutral-6, #d5dbe6);
@@ -122,9 +155,7 @@
       fill: var(--color-neutral-12, #0f172a) !important;
       color: var(--color-neutral-12, #0f172a) !important;
     }
-    .mermaid svg .pieTitleText {
-      fill: var(--color-neutral-11, #475569) !important;
-    }
+    .mermaid svg .pieTitleText { fill: var(--color-neutral-11, #475569) !important; }
     .error {
       border: 1px solid #ef4444;
       border-radius: 10px;
@@ -132,58 +163,9 @@
       background: #7f1d1d22;
       color: #fecaca;
     }
-    .layout {
-      display: grid;
-      grid-template-columns: 290px minmax(0, 1fr);
-      gap: 16px;
-      width: 100%;
-    }
-    .toc {
-      position: sticky;
-      top: 64px;
-      align-self: start;
-      max-height: calc(100vh - 84px);
-      overflow: auto;
-      border: 0;
-      border-right: 1px solid var(--color-neutral-6, #d5dbe6);
-      border-radius: 0;
-      background: transparent;
-      padding: 10px 12px 10px 10px;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-    }
-    .toc::-webkit-scrollbar {
-      display: none;
-    }
-    .toc-title {
-      font-weight: 700;
-      margin: 2px 4px 8px;
-      color: var(--color-neutral-11, #475569);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: .06em;
-    }
-    .toc a {
-      display: block;
-      padding: 5px 8px;
-      border-radius: 8px;
-      color: var(--color-neutral-12, #0f172a);
-      text-decoration: none;
-      font-size: 13px;
-      line-height: 1.35;
-    }
-    .toc a:hover {
-      background: var(--color-neutral-3, #eef2f7);
-      text-decoration: none;
-    }
-    .toc a.l2 { padding-left: 16px; color: var(--color-neutral-11, #475569); }
-    .toc a.l3 { padding-left: 24px; color: var(--color-neutral-11, #475569); }
     @media (max-width: 1100px) {
       .layout { grid-template-columns: 1fr; }
-      .toc {
-        position: static;
-        max-height: none;
-      }
+      .toc { position: static; max-height: none; border-right: 0; }
     }
   </style>
 </head>
@@ -205,10 +187,9 @@
         <option value="seamless-light">seamless-light</option>
         <option value="seamless-dark">seamless-dark</option>
       </select>
-      <button id="themeBtn" type="button">Dark Mode</button>
+      <button id="themeBtn" type="button">Light Mode</button>
     </div>
   </header>
-
   <main>
     <div class="layout">
       <nav id="toc" class="toc">
@@ -230,34 +211,25 @@
     const themeSelect = document.getElementById('themeSelect');
     const tocLinksEl = document.getElementById('tocLinks');
     const themeKey = 'alibre-pages-theme';
-    const themeClasses = [
-      'light', 'dark',
-      'solarized-light', 'solarized-dark',
-      'windows11-light', 'windows11-dark',
-      'github-light', 'github-dark',
-      'seamless-light', 'seamless-dark'
-    ];
+    const themeClasses = ['light','dark','solarized-light','solarized-dark','windows11-light','windows11-dark','github-light','github-dark','seamless-light','seamless-dark'];
 
-    function isDarkTheme(theme) {
-      return theme === 'dark' || theme.endsWith('-dark');
-    }
-
+    function isDarkTheme(theme) { return theme === 'dark' || theme.endsWith('-dark'); }
     function pairedTheme(theme) {
       if (theme === 'light') return 'dark';
       if (theme === 'dark') return 'light';
       if (theme.endsWith('-light')) {
-        const candidate = theme.replace(/-light$/, '-dark');
-        return themeClasses.includes(candidate) ? candidate : 'dark';
+        const c = theme.replace(/-light$/, '-dark');
+        return themeClasses.includes(c) ? c : 'dark';
       }
       if (theme.endsWith('-dark')) {
-        const candidate = theme.replace(/-dark$/, '-light');
-        return themeClasses.includes(candidate) ? candidate : 'light';
+        const c = theme.replace(/-dark$/, '-light');
+        return themeClasses.includes(c) ? c : 'light';
       }
       return isDarkTheme(theme) ? 'light' : 'dark';
     }
 
     function setTheme(theme) {
-      const picked = themeClasses.includes(theme) ? theme : 'light';
+      const picked = themeClasses.includes(theme) ? theme : 'windows11-dark';
       themeClasses.forEach(c => root.classList.remove(c));
       root.classList.add(picked);
       root.setAttribute('data-theme', isDarkTheme(picked) ? 'dark' : 'light');
@@ -285,57 +257,8 @@
       throw new Error('Unable to load README.md or readme-data.md');
     }
 
-    function postProcess() {
-      reportEl.querySelectorAll('table').forEach(t => {
-        if (!t.parentElement.classList.contains('table-wrap')) {
-          const w = document.createElement('div');
-          w.className = 'table-wrap';
-          t.parentElement.insertBefore(w, t);
-          w.appendChild(t);
-        }
-      });
-
-      reportEl.querySelectorAll('pre code').forEach(code => {
-        const className = code.className || '';
-        const text = (code.textContent || '').trim();
-        const looksLikeMermaid =
-          className.includes('language-mermaid') ||
-          text.startsWith('pie showData') ||
-          text.startsWith('graph ') ||
-          text.startsWith('flowchart ') ||
-          text.startsWith('sequenceDiagram') ||
-          text.startsWith('gantt') ||
-          text.startsWith('erDiagram');
-        if (!looksLikeMermaid) return;
-
-        const wrap = document.createElement('div');
-        wrap.className = 'mermaid-wrap';
-        const m = document.createElement('div');
-        m.className = 'mermaid';
-        m.setAttribute('data-graph', text);
-        m.textContent = text;
-        wrap.appendChild(m);
-        const pre = code.closest('pre');
-        pre.parentElement.replaceChild(wrap, pre);
-      });
-    }
-
-    async function renderMermaid() {
-      const blocks = reportEl.querySelectorAll('.mermaid[data-graph]');
-      if (!blocks.length || !window.mermaid) return;
-      const dark = root.getAttribute('data-theme') === 'dark';
-      mermaid.initialize({ startOnLoad: false, theme: dark ? 'dark' : 'default' });
-      blocks.forEach(b => b.textContent = b.dataset.graph || '');
-      try { await mermaid.run({ nodes: blocks }); } catch {}
-    }
-
     function slugify(text) {
-      return text
-        .toLowerCase()
-        .replace(/[^a-z0-9\\s-]/g, '')
-        .trim()
-        .replace(/\\s+/g, '-')
-        .replace(/-+/g, '-');
+      return text.toLowerCase().replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-').replace(/-+/g, '-');
     }
 
     function buildToc() {
@@ -354,6 +277,40 @@
         links.push(`<a class="l${level}" href="#${id}">${text}</a>`);
       });
       tocLinksEl.innerHTML = links.join('') || '<span class="meta">No headings found.</span>';
+    }
+
+    function postProcess() {
+      reportEl.querySelectorAll('table').forEach(t => {
+        if (!t.parentElement.classList.contains('table-wrap')) {
+          const w = document.createElement('div');
+          w.className = 'table-wrap';
+          t.parentElement.insertBefore(w, t);
+          w.appendChild(t);
+        }
+      });
+      reportEl.querySelectorAll('pre code').forEach(code => {
+        const cls = code.className || '';
+        const text = (code.textContent || '').trim();
+        const isMermaid = cls.includes('language-mermaid') || text.startsWith('pie showData') || text.startsWith('graph ') || text.startsWith('flowchart ') || text.startsWith('sequenceDiagram') || text.startsWith('gantt') || text.startsWith('erDiagram');
+        if (!isMermaid) return;
+        const wrap = document.createElement('div');
+        wrap.className = 'mermaid-wrap';
+        const m = document.createElement('div');
+        m.className = 'mermaid';
+        m.setAttribute('data-graph', text);
+        m.textContent = text;
+        wrap.appendChild(m);
+        const pre = code.closest('pre');
+        pre.parentElement.replaceChild(wrap, pre);
+      });
+    }
+
+    async function renderMermaid() {
+      const blocks = reportEl.querySelectorAll('.mermaid[data-graph]');
+      if (!blocks.length || !window.mermaid) return;
+      mermaid.initialize({ startOnLoad: false, theme: 'base' });
+      blocks.forEach(b => b.textContent = b.dataset.graph || '');
+      try { await mermaid.run({ nodes: blocks }); } catch {}
     }
 
     async function boot() {
