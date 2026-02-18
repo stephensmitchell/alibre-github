@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Alibre Design on GitHub</title>
+  <link rel="stylesheet" href="./theme.css">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font: 14px/1.55 "Segoe UI", "Inter", system-ui, sans-serif;
+      color: var(--color-neutral-12, #0f172a);
+      background: var(--color-bg, var(--color-neutral-1, #f5f7fb));
+    }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid var(--color-neutral-6, #d5dbe6);
+      backdrop-filter: blur(8px);
+      background: color-mix(in srgb, var(--color-neutral-1, #f5f7fb) 86%, transparent);
+    }
+    .topbar-inner {
+      width: 100%;
+      margin: 0;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .title { font-weight: 700; }
+    .meta { color: var(--color-neutral-11, #475569); }
+    .spacer { flex: 1; }
+    button {
+      border: 1px solid var(--color-neutral-6, #d5dbe6);
+      background: var(--color-neutral-2, #fff);
+      color: var(--color-neutral-12, #0f172a);
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    select {
+      border: 1px solid var(--color-neutral-6, #d5dbe6);
+      background: var(--color-neutral-2, #fff);
+      color: var(--color-neutral-12, #0f172a);
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-weight: 600;
+      min-width: 180px;
+    }
+    main { width: 100%; margin: 0; padding: 0; }
+    .report {
+      background: var(--color-bg, var(--color-neutral-1, #f5f7fb));
+      border: 0;
+      border-radius: 0;
+      padding: 12px 20px 24px;
+      width: 100%;
+    }
+    h1,h2,h3,h4 { line-height: 1.25; }
+    h1,h2,h3,h4 { scroll-margin-top: 84px; }
+    h2 { margin-top: 22px; padding-top: 14px; border-top: 1px solid var(--color-neutral-6, #d5dbe6); }
+    h3 { color: var(--color-accent-11, #0f766e); }
+    a { color: var(--color-accent-11, #0f766e); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    pre, code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+    pre {
+      background: var(--color-neutral-1, #f8fafc);
+      border: 1px solid var(--color-neutral-6, #d5dbe6);
+      border-radius: 10px;
+      padding: 12px;
+      overflow: auto;
+    }
+    code {
+      background: var(--color-neutral-1, #f8fafc);
+      border: 1px solid var(--color-neutral-6, #d5dbe6);
+      border-radius: 6px;
+      padding: 1px 6px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      min-width: 760px;
+    }
+    .table-wrap {
+      border: 1px solid var(--color-neutral-6, #d5dbe6);
+      border-radius: 12px;
+      overflow: auto;
+      margin: 10px 0 14px;
+      width: 100%;
+    }
+    th, td {
+      border-right: 1px solid var(--color-neutral-6, #d5dbe6);
+      border-bottom: 1px solid var(--color-neutral-6, #d5dbe6);
+      padding: 6px 8px;
+      text-align: left;
+      vertical-align: top;
+      white-space: nowrap;
+    }
+    th:last-child, td:last-child { border-right: 0; }
+    thead th {
+      background: var(--color-neutral-3, #eef2f7);
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    .mermaid-wrap {
+      border: 1px solid var(--color-neutral-6, #d5dbe6);
+      border-radius: 12px;
+      padding: 10px;
+      margin: 10px 0 16px;
+      overflow: auto;
+    }
+    .mermaid svg text,
+    .mermaid svg tspan,
+    .mermaid .legend text,
+    .mermaid .label {
+      fill: var(--color-neutral-12, #0f172a) !important;
+      color: var(--color-neutral-12, #0f172a) !important;
+    }
+    .mermaid svg .pieTitleText {
+      fill: var(--color-neutral-11, #475569) !important;
+    }
+    .error {
+      border: 1px solid #ef4444;
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: #7f1d1d22;
+      color: #fecaca;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: 290px minmax(0, 1fr);
+      gap: 16px;
+      width: 100%;
+    }
+    .toc {
+      position: sticky;
+      top: 64px;
+      align-self: start;
+      max-height: calc(100vh - 84px);
+      overflow: auto;
+      border: 0;
+      border-right: 1px solid var(--color-neutral-6, #d5dbe6);
+      border-radius: 0;
+      background: transparent;
+      padding: 10px 12px 10px 10px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .toc::-webkit-scrollbar {
+      display: none;
+    }
+    .toc-title {
+      font-weight: 700;
+      margin: 2px 4px 8px;
+      color: var(--color-neutral-11, #475569);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+    .toc a {
+      display: block;
+      padding: 5px 8px;
+      border-radius: 8px;
+      color: var(--color-neutral-12, #0f172a);
+      text-decoration: none;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    .toc a:hover {
+      background: var(--color-neutral-3, #eef2f7);
+      text-decoration: none;
+    }
+    .toc a.l2 { padding-left: 16px; color: var(--color-neutral-11, #475569); }
+    .toc a.l3 { padding-left: 24px; color: var(--color-neutral-11, #475569); }
+    @media (max-width: 1100px) {
+      .layout { grid-template-columns: 1fr; }
+      .toc {
+        position: static;
+        max-height: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="title">Alibre Design on GitHub</div>
+      <div id="meta" class="meta">Loading README...</div>
+      <div class="spacer"></div>
+      <select id="themeSelect" aria-label="Theme">
+        <option value="light">light</option>
+        <option value="dark">dark</option>
+        <option value="solarized-light">solarized-light</option>
+        <option value="solarized-dark">solarized-dark</option>
+        <option value="windows11-light">windows11-light</option>
+        <option value="windows11-dark">windows11-dark</option>
+        <option value="github-light">github-light</option>
+        <option value="github-dark">github-dark</option>
+        <option value="seamless-light">seamless-light</option>
+        <option value="seamless-dark">seamless-dark</option>
+      </select>
+      <button id="themeBtn" type="button">Dark Mode</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="layout">
+      <nav id="toc" class="toc">
+        <div class="toc-title">Contents</div>
+        <div id="tocLinks"></div>
+      </nav>
+      <article id="report" class="report"></article>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+  <script>
+    const root = document.documentElement;
+    const reportEl = document.getElementById('report');
+    const metaEl = document.getElementById('meta');
+    const themeBtn = document.getElementById('themeBtn');
+    const themeSelect = document.getElementById('themeSelect');
+    const tocLinksEl = document.getElementById('tocLinks');
+    const themeKey = 'alibre-pages-theme';
+    const themeClasses = [
+      'light', 'dark',
+      'solarized-light', 'solarized-dark',
+      'windows11-light', 'windows11-dark',
+      'github-light', 'github-dark',
+      'seamless-light', 'seamless-dark'
+    ];
+
+    function isDarkTheme(theme) {
+      return theme === 'dark' || theme.endsWith('-dark');
+    }
+
+    function pairedTheme(theme) {
+      if (theme === 'light') return 'dark';
+      if (theme === 'dark') return 'light';
+      if (theme.endsWith('-light')) {
+        const candidate = theme.replace(/-light$/, '-dark');
+        return themeClasses.includes(candidate) ? candidate : 'dark';
+      }
+      if (theme.endsWith('-dark')) {
+        const candidate = theme.replace(/-dark$/, '-light');
+        return themeClasses.includes(candidate) ? candidate : 'light';
+      }
+      return isDarkTheme(theme) ? 'light' : 'dark';
+    }
+
+    function setTheme(theme) {
+      const picked = themeClasses.includes(theme) ? theme : 'light';
+      themeClasses.forEach(c => root.classList.remove(c));
+      root.classList.add(picked);
+      root.setAttribute('data-theme', isDarkTheme(picked) ? 'dark' : 'light');
+      localStorage.setItem(themeKey, picked);
+      themeSelect.value = picked;
+      themeBtn.textContent = isDarkTheme(picked) ? 'Light Mode' : 'Dark Mode';
+    }
+
+    setTheme(localStorage.getItem(themeKey) || 'windows11-dark');
+    themeSelect.addEventListener('change', () => setTheme(themeSelect.value));
+    themeBtn.addEventListener('click', () => setTheme(pairedTheme(themeSelect.value)));
+
+    marked.setOptions({ gfm: true, breaks: false });
+
+    async function loadMarkdown() {
+      const sources = ['./README.md', './readme-data.md'];
+      for (const src of sources) {
+        try {
+          const r = await fetch(src, { cache: 'no-store' });
+          if (!r.ok) continue;
+          const text = await r.text();
+          return { src, text };
+        } catch {}
+      }
+      throw new Error('Unable to load README.md or readme-data.md');
+    }
+
+    function postProcess() {
+      reportEl.querySelectorAll('table').forEach(t => {
+        if (!t.parentElement.classList.contains('table-wrap')) {
+          const w = document.createElement('div');
+          w.className = 'table-wrap';
+          t.parentElement.insertBefore(w, t);
+          w.appendChild(t);
+        }
+      });
+
+      reportEl.querySelectorAll('pre code').forEach(code => {
+        const className = code.className || '';
+        const text = (code.textContent || '').trim();
+        const looksLikeMermaid =
+          className.includes('language-mermaid') ||
+          text.startsWith('pie showData') ||
+          text.startsWith('graph ') ||
+          text.startsWith('flowchart ') ||
+          text.startsWith('sequenceDiagram') ||
+          text.startsWith('gantt') ||
+          text.startsWith('erDiagram');
+        if (!looksLikeMermaid) return;
+
+        const wrap = document.createElement('div');
+        wrap.className = 'mermaid-wrap';
+        const m = document.createElement('div');
+        m.className = 'mermaid';
+        m.setAttribute('data-graph', text);
+        m.textContent = text;
+        wrap.appendChild(m);
+        const pre = code.closest('pre');
+        pre.parentElement.replaceChild(wrap, pre);
+      });
+    }
+
+    async function renderMermaid() {
+      const blocks = reportEl.querySelectorAll('.mermaid[data-graph]');
+      if (!blocks.length || !window.mermaid) return;
+      const dark = root.getAttribute('data-theme') === 'dark';
+      mermaid.initialize({ startOnLoad: false, theme: dark ? 'dark' : 'default' });
+      blocks.forEach(b => b.textContent = b.dataset.graph || '');
+      try { await mermaid.run({ nodes: blocks }); } catch {}
+    }
+
+    function slugify(text) {
+      return text
+        .toLowerCase()
+        .replace(/[^a-z0-9\\s-]/g, '')
+        .trim()
+        .replace(/\\s+/g, '-')
+        .replace(/-+/g, '-');
+    }
+
+    function buildToc() {
+      const headings = reportEl.querySelectorAll('h1, h2, h3');
+      const used = new Map();
+      const links = [];
+      headings.forEach(h => {
+        const level = Number(h.tagName.slice(1));
+        const text = (h.textContent || '').trim();
+        if (!text) return;
+        let id = h.id || slugify(text);
+        const count = used.get(id) || 0;
+        used.set(id, count + 1);
+        if (count > 0) id = `${id}-${count + 1}`;
+        h.id = id;
+        links.push(`<a class="l${level}" href="#${id}">${text}</a>`);
+      });
+      tocLinksEl.innerHTML = links.join('') || '<span class="meta">No headings found.</span>';
+    }
+
+    async function boot() {
+      try {
+        const loaded = await loadMarkdown();
+        const rawHtml = marked.parse(loaded.text);
+        const safeHtml = DOMPurify.sanitize(rawHtml, {
+          USE_PROFILES: { html: true },
+          FORBID_TAGS: ['script', 'iframe', 'object', 'embed'],
+          FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover', 'onfocus']
+        });
+        reportEl.innerHTML = safeHtml;
+        postProcess();
+        buildToc();
+        await renderMermaid();
+        const snap = loaded.text.split('\n').find(l => l.startsWith('Snapshot UTC:'));
+        metaEl.textContent = snap ? snap : `Source: ${loaded.src}`;
+      } catch (e) {
+        metaEl.textContent = 'Load failed';
+        reportEl.innerHTML = `<div class="error">${String(e)}</div>`;
+      }
+    }
+
+    boot();
+  </script>
+</body>
+</html>
